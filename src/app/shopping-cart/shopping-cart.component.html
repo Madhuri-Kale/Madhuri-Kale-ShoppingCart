@@ -1,0 +1,75 @@
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand text-left" href="javascript:;">Shopping Cart</a>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i
+            class="fa fa-shopping-cart mr-2 mt-2" aria-hidden="true"></i>Add Item</button>
+</nav>
+
+<div class="container">
+    <h3 class="mt-4">Shopping List</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Item Price</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="cartItems.length;else elsepart">
+            <tr *ngFor="let item of cartItems; let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="removeItem(item.id)">Remove</button>&nbsp;
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"
+                        (click)="editItem(item)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <ng-template #elsepart>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAWC99uTIb-spj0m412gzsLuWhbUeGI1GIjA&usqp=CAU"
+            alt="empty cart">
+        Your Shopping Cart is empty
+    </ng-template>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Item Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="itemForm" (ngSubmit)="isedit? updateItem() : addItem()">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="item-name" class="col-form-label">Item Name</label>
+                        <input type="text" class="form-control" id="item-name" formControlName="name">
+                        <span
+                            *ngIf="!itemForm.get('name').valid && itemForm.get('name').touched && itemForm.get('name').errors.required"
+                            class="text-danger">
+                            *Item Name is required
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-price" class="col-form-label">Price</label>
+                        <input type="number" class="form-control" id="item-price" formControlName="price">
+                        <span
+                            *ngIf="!itemForm.get('price').valid && itemForm.get('price').touched && itemForm.get('price').errors.required"
+                            class="text-danger">
+                            *Item price is required
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button type="submit" *ngIf="!isedit" class="btn btn-primary" data-dismiss="modal"
+                        (click)="addItem()">Add to Cart</button>
+                    <button type="submit" *ngIf="isedit" class="btn btn-primary" data-dismiss="modal"
+                        (click)="updateItem()">Update</button>
+                </div>
+            </form>
